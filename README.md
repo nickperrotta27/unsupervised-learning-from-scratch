@@ -1,96 +1,99 @@
-Unsupervised Learning From Scratch
+Clustering Analysis with K-Means and Gaussian Mixture Models
+Overview
 
-This repository implements classic unsupervised learning algorithms from the ground up, without using high-level ML libraries.
-It includes:
+This project implements and visualizes clustering using two popular methods:
 
-K-Means & K-Means++ clustering 
+K-Means Clustering – Assigns each point to exactly one cluster based on Euclidean distance.
 
-Density-based / mixture-model learning 
-(Gaussian Mixture Models + EM Algorithm)
+Gaussian Mixture Models (GMM) – Fits a mixture of Gaussian distributions to the data using the Expectation-Maximization (EM) algorithm, allowing soft cluster assignments.
 
-The goal is to demonstrate clean, vectorized, mathematically correct implementations of widely used unsupervised learning techniques.
+The project includes evaluation and selection of the optimal number of clusters using Elbow, Silhouette, and BIC methods.
 
-Project Structure
-├── kmeans_data.pkl              
-├── mixture_model_data.pkl      
-├── model.py              # All code + experiments
-└── README.md
+Features
 
-Part 1 — K-Means Clustering (from scratch)
-Implemented:
+K-Means
 
-K-Means++ initialization
+K-Means++ style centroid initialization.
 
-Full iterative clustering:
+Cluster assignment and centroid update.
 
-assign clusters via Euclidean distance
+Convergence monitoring via average within-cluster variance.
 
-update centroids
+Elbow and Silhouette methods to suggest optimal K.
 
-handle empty clusters
+Visualization of clusters with centroids.
 
-Convergence criteria based on centroid shift
+Gaussian Mixture Models
 
-Within-cluster variance tracking
+EM algorithm for fitting multivariate Gaussians.
 
-Silhouette score evaluation
+Soft assignments (responsibilities) for each data point.
 
-Convergence visualization
+Log-likelihood monitoring for convergence.
 
-Example:
-centroids, labels, var_history = kmeans(X, K=3, random_state=42)
+Bayesian Information Criterion (BIC) for model selection.
 
-Visualization:
+Visualization of Gaussian components with 2D ellipses.
+
+Installation
+
+Clone the repository and install required packages:
+
+pip install numpy matplotlib scikit-learn
+
+
+The project is designed to run in Google Colab for easy interaction with .pkl data files.
+
+Usage
+
+Upload Data: Provide your data as a .pkl file containing a NumPy array X of shape (n_samples, n_features).
+
+K-Means
+
+from kmeans_module import kmeans, assign_clusters
+K = 3
+centroids, labels, var_history = kmeans(X, K, verbose=True)
+
+
+Visualize convergence:
+
 plt.plot(var_history)
-plt.title("K-Means Convergence")
-plt.xlabel("Iteration")
-plt.ylabel("Within-Cluster Variance")
+plt.show()
 
-Part 2 — Gaussian Mixture Models (GMM) + EM Algorithm
 
-Implemented:
+Visualize clusters:
 
-Mixture of Gaussians fit using the Expectation–Maximization algorithm
+plt.scatter(X[:,0], X[:,1], c=labels)
+plt.scatter(centroids[:,0], centroids[:,1], c='red', marker='X')
+plt.show()
 
-Soft cluster assignments (responsibilities)
 
-Parameter updates:
+Gaussian Mixture Models
 
-mean vectors
+from gmm_module import gmm_em
+K = 3
+means, covariances, weights, resp, log_likelihoods = gmm_em(X, K, verbose=True)
+labels = np.argmax(resp, axis=1)
 
-covariance matrices
 
-mixture weights
+Visualize clusters with ellipses representing Gaussian components:
 
-Log-likelihood tracking
+draw_conf2D(means, covariances, plt.gca())
+plt.scatter(X[:,0], X[:,1], c=labels)
+plt.show()
 
-Convergence detection
 
-Example:
-gmm = GaussianMixtureScratch(K=3)
-gmm.fit(X, max_iter=200)
-labels = gmm.predict(X)
+Optimal K Selection
 
-Diagnostics:
+K-Means: Elbow (SSE) and Silhouette methods.
 
-Log-likelihood vs iteration
-
-Cluster visualization
-
-Comparison against K-Means
-
-Datasets
-kmeans_data.pkl
-
-Contains a 2D or high-dimensional dataset used for clustering with K-Means.
-
-mixture_model_data.pkl
-
-Used for fitting Gaussian mixture models or another density-based unsupervised method.
-
-Both files contain NumPy arrays stored via pickle.
-
-Requirements
-numpy
-matplotlib
+GMM: Bayesian Information Criterion (BIC).
 scikit-learn    # only for silhouette score and sanity-checking
+
+References
+
+Arthur, D., & Vassilvitskii, S. (2007). k-means++: The advantages of careful seeding.
+
+Bishop, C. M. (2006). Pattern Recognition and Machine Learning.
+
+Scikit-learn documentation: https://scikit-learn.org
