@@ -155,11 +155,6 @@ with open("mixture_model_data.pkl", "rb") as f:
     X = pickle.load(f)
 
 
-print(type(data))
-print(data.keys() if hasattr(data, "keys") else None)
-print(data[:5] if isinstance(data, (list, tuple)) else None)
-
-
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.patches import Ellipse
